@@ -24,9 +24,11 @@ export CROSS_CONTAINER_GID := if path_exists("/dev/kvm") == "true" { kvm-gid } e
 root := justfile_directory()
 
 default-target := "debug"
-simpleguest_source := "src/tests/rust_guests/simpleguest/target/x86_64-hyperlight-none"
-dummyguest_source := "src/tests/rust_guests/dummyguest/target/x86_64-hyperlight-none"
-witguest_source := "src/tests/rust_guests/witguest/target/x86_64-hyperlight-none"
+hyperlight-target-arch := env("HYPERLIGHT_TARGET", arch())
+hyperlight-target := if hyperlight-target-arch == "x86_64" { "x86_64-hyperlight-none" } else if hyperlight-target-arch == "aarch64" { "aarch64-hyperlight-none" } else { error("Unsupported architecture: " + arch()) }
+simpleguest_source := "src/tests/rust_guests/simpleguest/target/" + hyperlight-target
+dummyguest_source := "src/tests/rust_guests/dummyguest/target/" + hyperlight-target
+witguest_source := "src/tests/rust_guests/witguest/target/" + hyperlight-target
 rust_guests_bin_dir := "src/tests/rust_guests/bin"
 
 ################
